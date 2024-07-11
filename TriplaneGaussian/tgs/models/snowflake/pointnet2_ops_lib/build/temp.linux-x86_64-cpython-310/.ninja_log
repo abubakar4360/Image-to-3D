@@ -1,0 +1,10 @@
+# ninja log v5
+1	36506	1706857283507955053	/home/ubuntu/Projects/perfect365/TriplaneGaussian/tgs/models/snowflake/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-310/pointnet2_ops/_ext-src/src/interpolate_gpu.o	b3f2001bb3f86dd9
+1	36510	1706857283511955034	/home/ubuntu/Projects/perfect365/TriplaneGaussian/tgs/models/snowflake/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-310/pointnet2_ops/_ext-src/src/group_points_gpu.o	685294eff7f13a3e
+0	36799	1706857283799953612	/home/ubuntu/Projects/perfect365/TriplaneGaussian/tgs/models/snowflake/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-310/pointnet2_ops/_ext-src/src/ball_query_gpu.o	e3e7cd1dfe3f4e1a
+2	37371	1706857284371950789	/home/ubuntu/Projects/perfect365/TriplaneGaussian/tgs/models/snowflake/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-310/pointnet2_ops/_ext-src/src/sampling_gpu.o	101695ee282e51c0
+0	40393	1706857287387935908	/home/ubuntu/Projects/perfect365/TriplaneGaussian/tgs/models/snowflake/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-310/pointnet2_ops/_ext-src/src/group_points.o	52310522c0ace804
+1	40478	1706857287479935454	/home/ubuntu/Projects/perfect365/TriplaneGaussian/tgs/models/snowflake/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-310/pointnet2_ops/_ext-src/src/interpolate.o	36dc5f4c62f05421
+0	40578	1706857287575934979	/home/ubuntu/Projects/perfect365/TriplaneGaussian/tgs/models/snowflake/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-310/pointnet2_ops/_ext-src/src/bindings.o	8ec34846c8181bea
+0	40649	1706857287647934624	/home/ubuntu/Projects/perfect365/TriplaneGaussian/tgs/models/snowflake/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-310/pointnet2_ops/_ext-src/src/ball_query.o	e3f88e268aa85fef
+1	40984	1706857287987932947	/home/ubuntu/Projects/perfect365/TriplaneGaussian/tgs/models/snowflake/pointnet2_ops_lib/build/temp.linux-x86_64-cpython-310/pointnet2_ops/_ext-src/src/sampling.o	e89af5c7d0fe683b

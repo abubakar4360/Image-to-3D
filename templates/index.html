@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+    <title>Image-to-3D Conversion</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        label {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        input {
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            font-weight: bolder;
+        }
+        button:hover {
+            background-color: darkgreen;
+        }
+        .configurations button{
+            background-color: deepskyblue;
+        }
+        .configurations button:hover{
+            background-color: darkblue;
+        }
+        #spinner {
+            display: block;
+            width: 200px;
+              position: absolute;
+              left: 50%;
+              top: 80%;
+          transform: translate(-50%, -50%);
+        }
+        body{background-color: #ebebeb;}
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+{#<div class="container" style="background-color:#ebebeb; padding: 0px;">#}
+    <h1>Image-to-3D Conversion</h1>
+    <form method="post" enctype="multipart/form-data">
+        <label for="image">Choose an image file:</label>
+        <input type="file" name="image" id="image" accept=".png, .jpg, .jpeg">
+        <br>
+        <div style="display: inline-block;">
+            <h3>Run The Model</h3>
+        </div>
+        <div style="display: inline-block;">
+            <button type="button" onclick="call_api('dream')">Dream Guassian</button>
+            <button type="button" onclick="call_api('one')">One2345</button>
+        </div>
+    </form>
+    <div id="result"></div>
+    <div id="loader_div">
+    <canvas id="spinner" width="300" height="300">
+    </div>
+{#    </div>#}
+</body>
+<script>
+    function call_api(url,dependency=false) {
+        //add data
+        var form_data = new FormData()
+        var image = document.getElementById('image')
+        image = image.files[0]
+        if(!image && dependency == false){
+            toastr.error('No Image Found!');
+            return;
+        }
+        form_data.append('image', image)
+        // Display a loading message or spinner
+        {#$('#result').text('Processing...');#}
+
+        $("#loader_div").show();
+
+        let loader_time = 2;
+        if(dependency){
+            loader_time = 5;
+        } else if(url == "dream"){
+            loader_time = 120;
+        } else if(url == "stable"){
+            loader_time = 18*60;
+        } else if(url == "one"){
+            loader_time = 4*60;
+        }
+        run_loader(loader_time);
+        // Submit the form data using AJAX
+        $.ajax({
+            type: 'POST',
+            url: '/' + url,
+            data: form_data,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                // Display the downloadable link or error message
+                if (dependency){
+                    if (response.error) {
+                        console.log("error");
+                        $("#loader_div").hide();
+                    } else {
+                        {#console.log(response);#}
+                        toastr.success(response);
+                        $('#result').text('');
+                        $("#loader_div").hide();
+                    }
+                } else {
+                    if (response.error) {
+                        $('#result').text('Error: ' + response.error);
+                        $("#loader_div").hide();
+                    } else {
+                        // Provide a link to the /result endpoint
+                        $('#result').html('<a href="/result" download>Download Result</a>');
+                        $("#loader_div").hide();
+                    }
+                }
+            },
+            error: function() {
+                $('#result').text('');
+
+                toastr.error('Error in processing the image');
+                $("#loader_div").hide();
+            }
+        });
+    }
+    toastr.options = {
+      "closeButton": true,
+      "newestOnTop": false,
+      "progressBar": true,
+      "positionClass": "toast-top-center",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "5000",
+      "showEasing": "",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+    function run_loader(seconds){
+        let milliseconds = seconds * 1000;
+
+        let spinner = document.getElementById("spinner");
+        let ctx = spinner.getContext("2d");
+        let width = spinner.width;
+        let height = spinner.height;
+        let degrees = 0;
+        let new_degrees = 0;
+        let difference = 0;
+        let color = "deepskyblue";
+        let bgcolor = "#222";
+        let text;
+        let animation_loop, redraw_loop;
+
+        function init() {
+            ctx.clearRect(0, 0, width, height);
+
+            ctx.beginPath();
+            ctx.strokeStyle = bgcolor;
+            ctx.lineWidth = 30;
+            ctx.arc(width/2, width/2, 100, 0, Math.PI*2, false);
+            ctx.stroke();
+            let radians = degrees * Math.PI / 180;
+
+            ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 30;
+        ctx.arc(width/2, height/2, 100, 0 - 90*Math.PI/180, radians - 90*Math.PI/180, false);
+        ctx.stroke();
+        ctx.fillStyle = color;
+            ctx.font = "50px arial";
+            text = Math.floor(degrees/360*100) + "%";
+            text_width = ctx.measureText(text).width;
+        ctx.fillText(text, width/2 - text_width/2, height/2 + 15);
+        }
+
+        function draw() {
+            if (typeof animation_loop != undefined) clearInterval(animation_loop);
+            new_degrees = 360;
+            difference = new_degrees - degrees;
+            animation_loop = setInterval(animate_to, milliseconds/difference);
+        }
+
+        function animate_to() {
+            if(degrees == new_degrees)
+                clearInterval(animation_loop);
+            else if(degrees < new_degrees)
+                degrees++;
+            else
+                degrees--;
+            init();
+        }
+
+        draw();
+    }
+
+</script>
+</html>
